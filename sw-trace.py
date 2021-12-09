@@ -122,7 +122,7 @@ if __name__ == "__main__":
     print(end_time)
     sw_url = "http://172.16.53.232:9412/graphql" # skywalking的前端服务的地址和端口
     per_page_size = 5000  #指定一次显示接口条数
-    trace_detail_addr = "127.0.0.1:5000"
+    trace_detail_addr = "127.0.0.1:5000" # trace-id详细日志要访问的地址，该地址为sw-trace-id.py启动后的服务地址
 
     receiver = "shihaiyan@liuheqinqiang.com,test1@liuheqinqiang.com"  #报警邮件接收人地址
 

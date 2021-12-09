@@ -15,7 +15,7 @@ def trace_id_query():
     """
     trace_id = request.args.get("trace_id")
     url="http://172.16.53.232:9412/graphql"
-    # url="http://skywalking.roulw.com/graphql"
+
     data = {
       "query": "query queryTrace($traceId: ID!) {\n  trace: queryTrace(traceId: $traceId) {\n    spans {\n      traceId\n      segmentId\n      spanId\n      parentSpanId\n      refs {\n        traceId\n        parentSegmentId\n        parentSpanId\n        type\n      }\n      serviceCode\n      serviceInstanceName\n      startTime\n      endTime\n      endpointName\n      type\n      peer\n      component\n      isError\n      layer\n      tags {\n        key\n        value\n      }\n      logs {\n        time\n        data {\n          key\n          value\n        }\n      }\n    }\n  }\n  }",
       "variables": {

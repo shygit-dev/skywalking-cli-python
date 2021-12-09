@@ -1,0 +1,5 @@
+/api/v1/spans
+/api/v2/spans
+/actuator/health
+{GET}/api/adminUserInfo
+{GET}/orginfo/getsublist

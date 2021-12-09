@@ -89,10 +89,10 @@ def send_mail(receiver):
     发送报错接口邮件
     :return:
     """
-    server = "mail.liuheqinqiang.com"
-    sender = "sa@liuheqinqiang.com"
-    sender_pwd = "1qaz@WSX"
-    send_addr = "sa@liuheqinqiang.com"
+    server = "test.stmp.com"
+    sender = "sa@test.com"
+    sender_pwd = "sa"
+    send_addr = "sa@test.com"
 
     receiver = receiver
     with open("mail.html","r",encoding="utf-8") as f:
@@ -124,7 +124,7 @@ if __name__ == "__main__":
     per_page_size = 5000  #指定一次显示接口条数
     trace_detail_addr = "127.0.0.1:5000" # trace-id详细日志要访问的地址，该地址为sw-trace-id.py启动后的服务地址
 
-    receiver = "shihaiyan@liuheqinqiang.com,test1@liuheqinqiang.com"  #报警邮件接收人地址
+    receiver = "alter@test.com"  #报警邮件接收人地址
 
     trace_erro_interface(start_time,end_time,sw_url,per_page_size,trace_detail_addr)
     send_mail(receiver)

@@ -29,6 +29,10 @@
   ```Python
   # nohup python3 sw-trace-id.py &
   ```
+  <h2> v1.1 版本更新内容</h2>
+  1、本次更新了sw-trace.py文件。<br />
+  2、添加了blackname_keyword_list关键字日志过滤文件。<br />
+  3、主要是添加了过滤业务日志功能：def interface_content_filter(trace_id) <br />
   
   后续
   ==

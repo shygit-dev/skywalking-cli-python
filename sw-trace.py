@@ -8,15 +8,41 @@ import smtplib
 from email.mime.text import MIMEText
 import re
 
+def interface_content_filter(trace_id):
+    '''
+    对详细日志内容（业务逻辑报错）进行过滤
+    :param trace_id: 
+    :return: 【1|0】
+    '''
+    url = "http://127.0.0.1:5000/query"
+    params = {
+        "trace_id": trace_id
+    }
+    detail_trace_id_log = requests.request(method="GET",url=url,params=params)
+    detail_trace_id_log = detail_trace_id_log.text
+    print(detail_trace_id_log)
+    print(type(detail_trace_id_log))
+    with open("blackname_keyword_list","r",encoding="utf-8") as f:
+        for line in f:
+            print(line)
+            result = re.search(line.strip(),detail_trace_id_log)
+            print(result)
+            if result != None:
+                print("哥们匹配到日志黑名单关键字了：%s" % line)
+                return 0
+    print("提示：%s不在关键字黑名单中" % trace_id)
+    return 1
+
 def interface_filter(endpointName):
     """
     设置接口黑名单
     :param endpointName:
     :return: 【1|0】
     """
+    endpointName = re.sub("\(|\)",".",endpointName)
     with open("blackname_list","r",encoding="utf-8") as f:
         bn_list = f.read()
-    match_result = re.search(endpointName,bn_list)
+    match_result = re.search(endpointName.strip(),bn_list)
     if match_result == None:
         print("提示：接口不存在黑名单中")
         return 1
@@ -72,10 +98,15 @@ def trace_erro_interface(start_time,end_time,sw_url,per_page_size,trace_detail_a
         endpointName = trace["endpointNames"][0]
         trace_id = trace["traceIds"][0]
 
-        # 调用接口过滤功能
+        # 调用接口黑名单过滤功能
         result = interface_filter(endpointName)
         if result == 0:
             print("哥们进入黑名单了！",endpointName)
+            continue
+        # 调用关键字黑名单过滤功能
+        keyword_result = interface_content_filter(trace_id)
+        if keyword_result == 0:
+            print("哥们进入关键字黑名单了！", trace_id)
             continue
 
         with open("mail.html","a",encoding="utf-8") as f:
@@ -89,10 +120,10 @@ def send_mail(receiver):
     发送报错接口邮件
     :return:
     """
-    server = "test.stmp.com"
-    sender = "sa@test.com"
-    sender_pwd = "sa"
-    send_addr = "sa@test.com"
+    server = "mail.smtp.com"
+    sender = "sa@smtp.com"
+    sender_pwd = "123456"
+    send_addr = "sa@smtp.com"
 
     receiver = receiver
     with open("mail.html","r",encoding="utf-8") as f:
@@ -121,11 +152,12 @@ if __name__ == "__main__":
     print(start_time)
     print(end_time)
     sw_url = "http://172.16.53.232:9412/graphql" # skywalking的前端服务的地址和端口
-    per_page_size = 5000  #指定一次显示接口条数
-    trace_detail_addr = "127.0.0.1:5000" # trace-id详细日志要访问的地址，该地址为sw-trace-id.py启动后的服务地址
+    per_page_size = 5000  #指定一次获取endpoint接口的数目
+    trace_detail_addr = "127.0.0.1:5000"  #指定查询指定trace_id详细日志
 
-    receiver = "alter@test.com"  #报警邮件接收人地址
+    receiver = "test@smtp.com"  #报警邮件接收人地址
 
     trace_erro_interface(start_time,end_time,sw_url,per_page_size,trace_detail_addr)
     send_mail(receiver)
     # interface_filter()
+    # interface_content_filter("3c4212dd2dd548d394ba312c4619405d.104.16390380592724487")
